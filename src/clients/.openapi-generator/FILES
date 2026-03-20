@@ -1,0 +1,17 @@
+.gitignore
+.npmignore
+.openapi-generator-ignore
+api.ts
+base.ts
+common.ts
+configuration.ts
+docs/AuthApi.md
+docs/EntitiesApi.md
+docs/Error.md
+docs/LoginPost200Response.md
+docs/LoginPostRequest.md
+docs/MythologyEntity.md
+docs/MythologyIdPatchRequest.md
+docs/RegisterPostRequest.md
+git_push.sh
+index.ts
