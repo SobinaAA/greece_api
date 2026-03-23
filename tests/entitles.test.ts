@@ -6,10 +6,7 @@ import {
   EntitiesApi,
   LoginPost200Response,
 } from "../src/clients";
-import {
-  ApiResponse,
-  AuthResponseUnsuccess,
-} from "../src/types/apiResponse.types.ts";
+import { AuthResponseUnsuccess } from "../src/types/apiResponse.types.ts";
 import { rawClient } from "../src/services/raw.service";
 import addContext from "mochawesome/addContext";
 import { stringifyTopLevel } from "../src/helpers/stringifyObject";
@@ -25,29 +22,24 @@ describe("Сущности", function() {
     const entitiesApi = new EntitiesApi();
     const entitiesService = new EntitiesService(entitiesApi);
     correctSearch.forEach((testItem) => {
-      it.only(`Получение сущностей без авторизации. Позитивные тесты (цикл проверок): ${testItem.description}`, async function() {
+      it(`Получение сущностей без авторизации. Позитивные тесты (цикл проверок): ${testItem.description}`, async function() {
         //Act
         const data = await entitiesService.getAll(
           testItem.parameters.category,
           testItem.parameters.sort
         );
         //Assert
-        assert.equal(
-          data.message,
-          getAllMessages.ok,
-          `Ожидался message ${getAllMessages.ok}, но получен ${data.message}`
-        );
-        assert.ok(data.success, "Ожидалось, что запрос успешен");
+        assert.ok(Array.isArray(data));
         //Если что-то вернулось, и мы задали направление сортировки - то нужно проверить порядок
-        if (testItem.parameters.sort && data.data) {
-          const mySortedArray = sorting(data.data, testItem.parameters.sort);
-          assert.ok(isEqualByNames(data.data, mySortedArray));
+        if (testItem.parameters.sort && data.length > 0) {
+          const mySortedArray = sorting(data, testItem.parameters.sort);
+          assert.ok(isEqualByNames(data, mySortedArray));
         }
         //Если что-то вернулось, и мы задали категорию для фильтрации - то нужно проверить выдачу
-        if (testItem.parameters.category && data.data) {
+        if (testItem.parameters.category && data.length > 0) {
           assert.ok(
-            data.data.every(
-              (entitie) => entitie.category === testItem.parameters.category
+            data.every(
+              (entity) => entity.category === testItem.parameters.category
             )
           );
         }

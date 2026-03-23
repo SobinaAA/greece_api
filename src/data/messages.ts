@@ -1,11 +1,12 @@
 export const registerMessages = {
-  ok: "Регистрация успешна. Добро пожаловать в Пантеон!",
-  failed: "Имя пользователя уже занято или ошибка базы."
+  ok: "Регистрация успешна",
+  failed: "Пользователь уже существует или ошибка БД",
+  empty: "Логин и пароль обязательны."
 } as const;
 
 export const authMessages = {
   ok: "Вход выполнен успешно.",
-  incorrect: "Неверный логин или пароль."
+  incorrect: "Неверные данные"
 } as const;
 
 export const getAllMessages = {

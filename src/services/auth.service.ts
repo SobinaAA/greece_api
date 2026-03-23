@@ -1,73 +1,56 @@
-import { AuthApi, LoginPost200Response, LoginPostRequest, ModelError, RegisterPostRequest } from "../clients/api";
-
+import assert from "assert";
 import { AxiosResponse, AxiosError } from "axios";
-import { strict as assert } from "assert";
-import { ApiResponse } from "../types/apiResponse.types.ts";
+import { AuthApi, LoginPostRequest, RegisterPostRequest } from "../clients";
+import { RegisterResponseSuccess, RegisterResponseUnsuccess, AuthResponseSuccess, AuthResponseUnsuccess } from "../types/apiResponse.types.ts";
 
 export class AuthService {
-
   private api = new AuthApi();
 
-  /**
-   * Регистрирует пользователя.
-   * @param credentials данные для регистрации
-   * @param expectedStatus если указан, проверяет, что статус совпадает
-   * @returns объект с типом RegisterResponse
-   */
   async register(
     credentials: RegisterPostRequest,
     expectedStatus?: number
-  ): Promise<ApiResponse<null>> {
-    let response: AxiosResponse<ApiResponse<null>>;
+  ): Promise<RegisterResponseSuccess | RegisterResponseUnsuccess> {
+    let response: AxiosResponse;
 
     try {
-      response = await this.api.registerPost(credentials) as unknown as AxiosResponse<ApiResponse<null>>;
+      response = await this.api.registerPost(credentials);
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse<null>>;
+      const axiosError = error as AxiosError;
       if (axiosError.response) {
         response = axiosError.response;
       } else {
-        throw error; 
+        throw error;
       }
     }
 
     if (expectedStatus !== undefined) {
-      assert.equal(response.status, expectedStatus, `Ожидался статус ${expectedStatus}, но получен ${response.status}`);
+      assert.equal(response.status, expectedStatus);
     }
 
     return response.data;
   }
 
-
-  /**
-   * Авторизуется пользователем.
-   * @param credentials данные для авторизации
-   * @param expectedStatus если указан, проверяет, что статус совпадает
-   * @returns объект с ошибкой или токеном (error или token)
-   */
   async auth(
     credentials: LoginPostRequest,
     expectedStatus?: number
-  ): Promise<ApiResponse<LoginPost200Response | ModelError>> {
-    let response: AxiosResponse<ApiResponse<LoginPost200Response | ModelError>>;
+  ): Promise<AuthResponseSuccess | AuthResponseUnsuccess> {
+    let response: AxiosResponse;
 
     try {
-      response = await this.api.loginPost(credentials) as unknown as AxiosResponse<ApiResponse<LoginPost200Response | ModelError>>;
+      response = await this.api.loginPost(credentials);
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse<LoginPost200Response | ModelError>>;
+      const axiosError = error as AxiosError;
       if (axiosError.response) {
         response = axiosError.response;
       } else {
-        throw error; 
+        throw error;
       }
     }
 
     if (expectedStatus !== undefined) {
-      assert.equal(response.status, expectedStatus, `Ожидался статус ${expectedStatus}, но получен ${response.status}`);
+      assert.equal(response.status, expectedStatus);
     }
 
     return response.data;
   }
-
-
 }

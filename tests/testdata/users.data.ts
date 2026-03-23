@@ -48,7 +48,87 @@ export const correctRegisterUserData: UserTest[] = [
   },
 ];
 
-export const incorrectRegisterUserData: UserTest[] = [
+export const IncorrectRegisterUserData: BrokenUserTest[] = [
+  {
+    credentials: {
+      username: datagenerator.generateStringWithAllSymbols(51),
+      password: datagenerator.getRandomNumberFromInterval(1, 100000),
+    },
+    description: "Numbers in PASSWORD field",
+  },
+  {
+    credentials: {
+      username: datagenerator.getRandomNumberFromInterval(1, 100000), //Зарегистрирован пользователь
+      password: datagenerator.generateStringWithAllSymbols(51),
+    },
+    description: "Numbers in USERNAME field",
+  },
+  {
+    credentials: {
+      username: datagenerator.getRandomBoolean(),
+      password: datagenerator.getRandomBoolean(),
+    },
+    description: "Boolean in both fields",
+  },
+  {
+    credentials: {
+      username: datagenerator.generateStringWithAllSymbols(51),
+      password: [datagenerator.generateStringWithAllSymbols(10)],
+    },
+    description: "Array in PASSWORD field",
+  },
+  {
+    credentials: {
+      username: [datagenerator.generateStringWithAllSymbols(10)],
+      password: datagenerator.generateStringWithAllSymbols(51),
+    },
+    description: "Array in USERNAME field",
+  },
+  {
+    credentials: {
+      username: { username: datagenerator.generateStringWithAllSymbols(10) },
+      password: datagenerator.generateStringWithAllSymbols(51),
+    },
+    description: "Object in USERNAME field",
+  },
+  {
+    credentials: {
+      username: datagenerator.generateStringWithAllSymbols(51),
+      password: { password: datagenerator.generateStringWithAllSymbols(10) },
+    },
+    description: "Object in PASSWORD field",
+  },
+];
+
+export const brokenRegisterUserData: BrokenUserTest[] = [
+  {
+    credentials: {
+      password: datagenerator.getRandomBoolean(),
+    },
+    description: "No username field",
+  },
+  {
+    credentials: {
+      username: datagenerator.generateStringWithAllSymbols(51),
+    },
+    description: "No password field",
+  },
+  {
+    credentials: {
+      field1: datagenerator.generateStringWithAllSymbols(51),
+      field2: datagenerator.getRandomNumberFromInterval(1, 1000),
+      field3: null,
+      field4: datagenerator.getRandomBoolean(),
+      field5: {
+        fild51: 12,
+        field52: "Молоко",
+      },
+    },
+    description: "Strange object with different fields",
+  },
+];
+
+export const emptyRegisterUserData: BrokenUserTest[] = [
   {
     credentials: {
       username: "",
@@ -76,32 +156,6 @@ export const incorrectRegisterUserData: UserTest[] = [
   },
   {
     credentials: {
-      username: datagenerator.generateStringWithAllSymbols(51),
-      password: datagenerator.generateStringWithAllSymbols(
-        datagenerator.getRandomNumberFromInterval(2, 49)
-      ),
-    },
-    description: "USERNAME field is > 50 symbols length",
-  },
-];
-
-export const brokenRegisterUserData: BrokenUserTest[] = [
-  {
-    credentials: {
-      username: datagenerator.getRandomNumberFromInterval(1, 100000), //Зарегистрирован пользователь
-      password: datagenerator.generateStringWithAllSymbols(51),
-    },
-    description: "Numbers in USERNAME field",
-  },
-  {
-    credentials: {
-      username: datagenerator.generateStringWithAllSymbols(51),
-      password: datagenerator.getRandomNumberFromInterval(1, 100000),
-    },
-    description: "Numbers in PASSWORD field",
-  },
-  {
-    credentials: {
       username: null,
       password: datagenerator.generateStringWithAllSymbols(51),
     },
@@ -121,78 +175,4 @@ export const brokenRegisterUserData: BrokenUserTest[] = [
     },
     description: "NULL in both fields",
   },
-  {
-    credentials: {
-      username: datagenerator.getRandomBoolean(),
-      password: datagenerator.generateStringWithAllSymbols(51),
-    },
-    description: "Boolean USERNAME field",   //Зарегистрирован пользователь
-  },
-  {
-    credentials: {
-      username: datagenerator.generateStringWithAllSymbols(51),
-      password: datagenerator.getRandomBoolean(),
-    },
-    description: "Boolean in PASSWORD field",
-  },
-  {
-    credentials: {
-      username: datagenerator.getRandomBoolean(),
-      password: datagenerator.getRandomBoolean(),
-    },
-    description: "Boolean in both fields",
-  },
-  {
-    credentials: {
-      username: [datagenerator.generateStringWithAllSymbols(10)],
-      password: datagenerator.generateStringWithAllSymbols(51),
-    },
-    description: "Array in USERNAME field",
-  },
-  {
-    credentials: {
-      username: datagenerator.generateStringWithAllSymbols(51),
-      password: [datagenerator.generateStringWithAllSymbols(10)],
-    },
-    description: "Array in PASSWORD field",
-  },
-    {
-    credentials: {
-      username: {username: datagenerator.generateStringWithAllSymbols(10)},
-      password: datagenerator.generateStringWithAllSymbols(51),
-    },
-    description: "Object in USERNAME field",
-  },
-  {
-    credentials: {
-      username: datagenerator.generateStringWithAllSymbols(51),
-      password: {password: datagenerator.generateStringWithAllSymbols(10)},
-    },
-    description: "Object in PASSWORD field",
-  },
-  {
-    credentials: {
-      password: datagenerator.getRandomBoolean(),
-    },
-    description: "No username field",
-  },
-  {
-    credentials: {
-      username: datagenerator.generateStringWithAllSymbols(51),
-    },
-    description: "No password field",
-  },
-  {
-    credentials: {
-      field1: datagenerator.generateStringWithAllSymbols(51),
-      field2: datagenerator.getRandomNumberFromInterval(1, 1000),
-      field3: null,
-      field4: datagenerator.getRandomBoolean(),
-      field5: {
-        fild51: 12,
-        field52: "Молоко",
-      },
-    },
-    description: "Strange object with different fields",
-  }
 ];

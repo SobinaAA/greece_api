@@ -1,6 +1,5 @@
 import { LoginPost200Response } from "../clients";
 import { AuthService } from "../services/auth.service";
-import { ApiResponse } from "../types/apiResponse.types.ts";
 import { DataGenerator } from "./data.generator";
 import { RegisterPostRequest } from "../../src/clients/api";
 
@@ -8,7 +7,7 @@ export async function prepareToken(creds?: RegisterPostRequest) {
   const authService = new AuthService();
   const datagenerator = new DataGenerator();
 
-  const generatedCredentials: RegisterPostRequest = {
+  const generatedCredentials = {
     username: datagenerator.generateStringWithAllSymbols(
       datagenerator.getRandomNumberFromInterval(1, 50)
     ),
@@ -17,13 +16,14 @@ export async function prepareToken(creds?: RegisterPostRequest) {
     ),
   };
 
-  const credentials: RegisterPostRequest = {
-    ...generatedCredentials,
-    ...creds,
-  };
+  const credentials = { ...generatedCredentials, ...creds };
 
   await authService.register(credentials);
   const data = await authService.auth(credentials, 200);
-  const data200 = data as ApiResponse<LoginPost200Response>;
-  return data200.data?.token;
+
+  if ("token" in data) {
+    return data.token;
+  }
+
+  throw new Error("Не удалось получить токен");
 }
