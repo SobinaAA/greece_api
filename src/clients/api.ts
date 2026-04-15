@@ -369,6 +369,40 @@ export const EntitiesApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary Получение одной сущности
+         * @param {number} id ID сущности 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+
+        mythologyIdGet: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        assertParamExists('mythologyIdGet', 'id', id)
+        const localVarPath = `/mythology/{id}`
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+        let baseOptions;
+        if (configuration) {
+        baseOptions = configuration.baseOptions;
+    }
+        const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+        const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+        localVarHeaderParameter['Accept'] = 'application/json';
+        setSearchParams(localVarUrlObj, localVarQueryParameter);
+        let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+        localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers
+    };
+
+    return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+    };
+},
+        /**
+         * 
          * @summary Полное обновление сущности
          * @param {number} id ID сущности (Внимание! ID 1-31 защищены от правок)
          * @param {MythologyEntity} mythologyEntity 
@@ -487,6 +521,23 @@ export const EntitiesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Получить сущность по ID
+         * @param {number} id ID сущности 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mythologyIdGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MythologyEntity>> {
+        const localVarAxiosArgs = await localVarAxiosParamCreator.mythologyIdGet(id, options);
+        const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+        const localVarOperationServerBasePath = operationServerMap['EntitiesApi.mythologyIdGet']?.[localVarOperationServerIndex]?.url;
+        return (axios, basePath) =>
+        createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(
+            axios,
+            localVarOperationServerBasePath || basePath
+        );
+},
+        /**
+         * 
          * @summary Частичное обновление сущности
          * @param {number} id ID сущности (Внимание! ID 1-31 защищены от правок)
          * @param {MythologyIdPatchRequest} [mythologyIdPatchRequest] 
@@ -556,6 +607,16 @@ export const EntitiesApiFactory = function (configuration?: Configuration, baseP
         mythologyIdDelete(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.mythologyIdDelete(id, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary Получить сущность по ID
+         * @param {number} id ID сущности 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mythologyIdGet(id: number, options?: RawAxiosRequestConfig): AxiosPromise<MythologyEntity> {
+            return localVarFp.mythologyIdGet(id, options).then((request) => request(axios, basePath));
+},
         /**
          * 
          * @summary Частичное обновление сущности
@@ -642,6 +703,18 @@ export class EntitiesApi extends BaseAPI {
         return EntitiesApiFp(this.configuration).mythologyIdPut(id, mythologyEntity, options).then((request) => request(this.axios, this.basePath));
     }
 
+    /**
+     * 
+     * @summary Получить сущность по ID
+     * @param {number} id ID сущности 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+    */
+    public mythologyIdGet(id: number, options?: RawAxiosRequestConfig) {
+        return EntitiesApiFp(this.configuration)
+        .mythologyIdGet(id, options)
+        .then((request) => request(this.axios, this.basePath));
+}
     /**
      * 
      * @summary Призвать новую сущность

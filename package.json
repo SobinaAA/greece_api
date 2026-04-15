@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "generate:api": "openapi-generator-cli generate -i https://api.qasandbox.ru/swagger.json -g typescript-axios -o src/clients",
-    "test": "mocha -r ts-node/register tests/**/*.test.ts"
+    "test": "mocha -r ts-node/register tests/**/*.test.ts",
+    "test_report": "mocha --require ts-node/register --require source-map-support/register --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=index,json=true,html=true tests/**/*.test.ts"
   },
   "keywords": [],
   "author": "",

@@ -9,7 +9,3 @@ export const authMessages = {
   incorrect: "Неверные данные"
 } as const;
 
-export const getAllMessages = {
-  ok: "Список сущностей получен."
-} as const;
-
