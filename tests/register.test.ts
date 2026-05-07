@@ -18,8 +18,9 @@ describe("Пользователи", function() {
   describe("Регистрация", function() {
     correctRegisterUserData.forEach((testItem) => {
       it(`Регистрация. Позитивные тесты: ${testItem.description}`, async function() {
+        //Act
         const data = await authService.register(testItem.data, testItem.status);
-
+        //Assert
         assert.ok("message" in data, "Ожидался успешный ответ");
         assert.equal(
           data.message,
@@ -32,11 +33,11 @@ describe("Пользователи", function() {
     IncorrectRegisterUserData.forEach((testItem) => {
       it(`Негативные тесты (тип данных): ${testItem.description}`, async function() {
         addContext(this, "username не строка: boolean, number, object, array");
+        //Act
         const response = await rawClient.post("/register", testItem.data);
         const data = response.data;
-
+        //Assert
         assert.equal(response.status, testItem.status);
-
         assert.ok("error" in data, "Ожидалась ошибка");
         assert.equal(
           data.error,
@@ -47,6 +48,7 @@ describe("Пользователи", function() {
     });
 
     it("Негативный. Повторная регистрация.", async function() {
+      //Arrange
       const credentials = {
         username: datagenerator.generateStringWithAllSymbols(
           datagenerator.getRandomNumberFromInterval(2, 49),
@@ -55,10 +57,10 @@ describe("Пользователи", function() {
           datagenerator.getRandomNumberFromInterval(2, 49),
         ),
       };
-
       await authService.register(credentials);
+      //Act
       const data = await authService.register(credentials, 400);
-
+      //Assert
       assert.ok("error" in data, "Ожидалась ошибка");
       assert.equal(
         data.error,
@@ -68,7 +70,7 @@ describe("Пользователи", function() {
     });
   });
 
-  describe("Авторизация", function() {
+  describe.only("Авторизация", function() {
     const credentials = {
       username: datagenerator.generateStringWithAllSymbols(
         datagenerator.getRandomNumberFromInterval(1, 50),
@@ -83,22 +85,24 @@ describe("Пользователи", function() {
     });
 
     it("Позитивный. Авторизация зарегистрированным пользователем.", async function() {
+      //Act
       const data = await authService.auth(credentials, 200);
-
+      //Assert
       assert.ok("token" in data, "Ожидался токен");
       assert.ok(data.token.length > 0, "Токен не должен быть пустым");
     });
 
     it("Негативный. Неверный пароль.", async function() {
+      //Arrange
       const credentialsFakePassword = {
         username: credentials.username,
         password: datagenerator.generateStringWithAllSymbols(
           datagenerator.getRandomNumberFromInterval(1, 50),
         ),
       };
-
+      //Act
       const data = await authService.auth(credentialsFakePassword, 401);
-
+      //Assert
       assert.ok("error" in data, "Ожидалась ошибка");
       assert.equal(
         data.error,
@@ -108,6 +112,7 @@ describe("Пользователи", function() {
     });
 
     it("Негативный. Не зарегистрированный пользователь", async function() {
+      //Arrange
       const randomCredentials = {
         username: datagenerator.generateStringWithAllSymbols(
           datagenerator.getRandomNumberFromInterval(1, 50),
@@ -116,9 +121,9 @@ describe("Пользователи", function() {
           datagenerator.getRandomNumberFromInterval(1, 50),
         ),
       };
-
+      //Act
       const data = await authService.auth(randomCredentials, 401);
-
+      //Assert
       assert.ok("error" in data, "Ожидалась ошибка");
       assert.equal(
         data.error,
@@ -129,14 +134,14 @@ describe("Пользователи", function() {
 
     IncorrectAuthUserData.forEach((testItem) => {
       it(`Негативные тесты: ${testItem.description}`, async function() {
+        //Arrange
         const dataForRegister = stringifyTopLevel(testItem.data);
         await rawClient.post("/register", dataForRegister);
-
+        //Act
         const response = await rawClient.post("/login", testItem.data);
         const data = response.data;
-
+        //Assert
         assert.equal(response.status, testItem.status);
-
         assert.ok("error" in data, "Ожидалась ошибка");
         assert.equal(
           data.error,

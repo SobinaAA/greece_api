@@ -204,7 +204,29 @@ export const IncorrectRegisterUserData: TestData[] = [
     },
     description: "Boolean в обоих полях",
     status: 400,
-    message: registerMessages.empty,
+    message: registerMessages.failed,
+  },
+  {
+    data: {
+      username: datagenerator.getRandomBoolean(),
+      password: datagenerator.generateStringWithAllSymbols(
+        datagenerator.getRandomNumberFromInterval(2, 49),
+      ),
+    },
+    description: "Boolean в Логине",
+    status: 400,
+    message: registerMessages.failed,
+  },
+  {
+    data: {
+      username: datagenerator.generateStringWithAllSymbols(
+        datagenerator.getRandomNumberFromInterval(2, 49),
+      ),
+      password: datagenerator.getRandomBoolean(),
+    },
+    description: "Boolean в Пароле",
+    status: 400,
+    message: registerMessages.failed,
   },
 ];
 
@@ -367,6 +389,28 @@ export const IncorrectAuthUserData: TestData[] = [
       password: datagenerator.getRandomBoolean(),
     },
     description: "Boolean в обоих полях",
+    status: 401,
+    message: authMessages.incorrect,
+  },
+  {
+    data: {
+      username: datagenerator.getRandomBoolean(),
+      password: datagenerator.generateStringWithAllSymbols(
+        datagenerator.getRandomNumberFromInterval(2, 49),
+      ),
+    },
+    description: "Boolean в Логине",
+    status: 401,
+    message: authMessages.incorrect,
+  },
+  {
+    data: {
+      username: datagenerator.generateStringWithAllSymbols(
+        datagenerator.getRandomNumberFromInterval(2, 49),
+      ),
+      password: datagenerator.getRandomBoolean(),
+    },
+    description: "Boolean в Пароле",
     status: 401,
     message: authMessages.incorrect,
   },
