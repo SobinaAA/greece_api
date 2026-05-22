@@ -12,5 +12,6 @@ export const authMessages = {
 
 
 export const entetieMessages = {
-  emptyFields: "Поля name и category обязательны."
+  emptyFields: "Поля name и category обязательны.",
+  incorrectID: "ID должен быть положительным целым числом."
 } as const;

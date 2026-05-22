@@ -124,8 +124,14 @@ export const incorrectID: IdTest[] = [
     data: { id: datagenerator.getRandomNumberFromInterval(-1000, -1) },
     description: "ID Отрицательное число",
     status: 400,
+    message: entetieMessages.incorrectID,
   },
-  { data: { id: 0 }, description: "ID Ноль", status: 400 },
+  {
+    data: { id: 0 },
+    description: "ID Ноль",
+    status: 400,
+    message: entetieMessages.incorrectID,
+  },
   {
     data: {
       id: datagenerator.generateAlphanumeric(
@@ -134,6 +140,7 @@ export const incorrectID: IdTest[] = [
     },
     description: "ID строка",
     status: 400,
+    message: entetieMessages.incorrectID,
   },
 ];
 

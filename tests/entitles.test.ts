@@ -74,6 +74,29 @@ describe("Сущности", function() {
         "Сущности отличаются",
       );
     });
+
+
+    //**
+    // Так как доступа в БД нет, запрашиваем все сущности и одну, сравниваем их по ID
+    //  */
+    it.only("Получение одной сущности без авторизации, такого номера нет. Негативный тест", async function() {
+      //Arrange
+      const allDefaultEntities = await entitiesService.getAll();
+      const maxId = allDefaultEntities.reduce((max, item) => Math.max(max, item.id!), 0);
+      //Act
+      const response = await rawClient.get(`/mythology/${maxId + datagenerator.getRandomNumberFromInterval(100,1000)}`);
+      //Assert
+      assert.equal(response.status, 404);
+    });
+
+    incorrectID.forEach((testItem) => {
+      it.only(`Получение сущности по некорректному номеру. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+      //Act
+      const response = await rawClient.get(`/mythology/${testItem.data.id}`);
+      //Assert
+      assert.equal(response.status, 400);
+      })});
+
   });
 
   describe("С авторизацией", async function() {
@@ -189,7 +212,7 @@ describe("Сущности", function() {
       });
 
       createIncorrectEntitie.forEach((testItem) => {
-        it.only(`Создание сущностей с разными параметрами. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+        it(`Создание сущностей с разными параметрами. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
           //Arange
           const dataForCreation = stringifyTopLevel(testItem.data);
           //Act
