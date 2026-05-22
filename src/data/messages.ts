@@ -9,3 +9,8 @@ export const authMessages = {
   incorrect: "Неверные данные"
 } as const;
 
+
+
+export const entetieMessages = {
+  emptyFields: "Поля name и category обязательны."
+} as const;

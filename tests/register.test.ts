@@ -70,7 +70,7 @@ describe("Пользователи", function() {
     });
   });
 
-  describe.only("Авторизация", function() {
+  describe("Авторизация", function() {
     const credentials = {
       username: datagenerator.generateStringWithAllSymbols(
         datagenerator.getRandomNumberFromInterval(1, 50),
