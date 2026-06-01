@@ -16,12 +16,14 @@ import {
   createIncorrectEntitie,
   incorrectID,
   incorrectSearch,
+  createRandomEntitie,
 } from "./testdata/entities.data";
 import { sorting } from "../src/helpers/sorting";
 import { isEqualByNames } from "../src/helpers/isEqual";
 import { omit } from "../src/helpers/omit";
 import { rawClient } from "../src/services/raw.service";
 import { stringifyTopLevel } from "../src/helpers/stringifyObject";
+import { entetieMessages } from "../src/data/messages";
 
 describe("Сущности", function() {
   const datagenerator = new DataGenerator();
@@ -147,18 +149,7 @@ describe("Сущности", function() {
     describe("Удаление", async function() {
       it("Одной сущности после её создания (с авторизацией). Позитивный тест", async function() {
         //Arrange
-        const entity = {
-          name: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 50),
-          ),
-          category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
-          desc: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 1000),
-          ),
-          img: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 1000),
-          ),
-        };
+        const entity = createRandomEntitie();
         const data = await entitiesService.create(entity, 201);
         //Act
         await entitiesService.delete(data.id!, 204);
@@ -192,18 +183,7 @@ describe("Сущности", function() {
 
       it("Повторное. Негативный тест, сущность не должна быть найдена", async function() {
         //Arrange
-        const entity = {
-          name: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 50),
-          ),
-          category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
-          desc: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 1000),
-          ),
-          img: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 1000),
-          ),
-        };
+        const entity = createRandomEntitie();
         const data = await entitiesService.create(entity, 201);
         await entitiesService.delete(data.id!, 204);
         //Act
@@ -269,18 +249,7 @@ describe("Сущности", function() {
 
       it("Создание сущности (без авторизации). Негативный тест", async function() {
         //Arrange
-        const entity = {
-          name: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 50),
-          ),
-          category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
-          desc: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 1000),
-          ),
-          img: datagenerator.generateAlphanumeric(
-            datagenerator.getRandomNumberFromInterval(2, 1000),
-          ),
-        };
+        const entity = createRandomEntitie();
         //Act
         await entitiesServiceWithoutToken.create(entity, 401);
       });
@@ -290,59 +259,135 @@ describe("Сущности", function() {
       correctPatchTest.forEach((testItem) => {
         it(`Частичное обновление. Позитивные тесты (цикл проверок): ${testItem.description}`, async function() {
           //Arrange
-          const randomEntity: MythologyEntity = {
-            name: datagenerator.generateAlphanumeric(
-              datagenerator.getRandomNumberFromInterval(3, 100),
-            ),
-            category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
-            desc: datagenerator.generateAlphanumeric(
-              datagenerator.getRandomNumberFromInterval(2, 50),
-            ),
-            img: datagenerator.generateAlphanumeric(
-              datagenerator.getRandomNumberFromInterval(2, 50),
-            ),
-          };
+          const randomEntity = createRandomEntitie();
           const createdEntity = await entitiesService.create(randomEntity, 201);
           //Act
-          const data = await entitiesService.patch(createdEntity.id!, testItem.data) as MythologyEntity;
-          const expectedEntity: MythologyEntity = {...createdEntity, ...testItem.data};
+          const data = (await entitiesService.patch(
+            createdEntity.id!,
+            testItem.data,
+          )) as MythologyEntity;
+          const expectedEntity: MythologyEntity = {
+            ...createdEntity,
+            ...testItem.data,
+          };
           //Assert
           assert.deepStrictEqual(data, expectedEntity);
         });
       });
 
       it("Обновление поля с изображением на NULL. Позитивный тест", async function() {
-          //Arrange
-          const randomEntity = {
-            name: datagenerator.generateAlphanumeric(
-              datagenerator.getRandomNumberFromInterval(3, 100),
-            ),
-            category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
-            desc: datagenerator.generateAlphanumeric(
-              datagenerator.getRandomNumberFromInterval(2, 50),
-            ),
-            img: datagenerator.generateAlphanumeric(
-              datagenerator.getRandomNumberFromInterval(2, 50),
-            ),
-          };
-           const createdEntity = await entitiesService.create(randomEntity, 201);
-           const entitieWithNull = {
-             name: datagenerator.generateAlphanumeric(
-               datagenerator.getRandomNumberFromInterval(3, 100),
-             ),
-             category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
-             desc: datagenerator.generateAlphanumeric(
-               datagenerator.getRandomNumberFromInterval(2, 50),
-             ),
-             img: null,
-           }; 
-          //Act
-          const data = (await rawClient.patch(`/mythology/${createdEntity.id!}`,  entitieWithNull,
+        //Arrange
+        const randomEntity = createRandomEntitie();
+        const createdEntity = await entitiesService.create(randomEntity, 201);
+        const entitieWithNull = {
+          name: datagenerator.generateAlphanumeric(
+            datagenerator.getRandomNumberFromInterval(3, 100),
+          ),
+          category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+          desc: datagenerator.generateAlphanumeric(
+            datagenerator.getRandomNumberFromInterval(2, 50),
+          ),
+          img: null,
+        };
+        //Act
+        const data = (
+          await rawClient.patch(
+            `/mythology/${createdEntity.id!}`,
+            entitieWithNull,
             { headers: { Authorization: `Bearer ${token}` } },
-          )).data;
-          const expectedEntity = {...createdEntity, ...entitieWithNull};
+          )
+        ).data;
+        const expectedEntity = { ...createdEntity, ...entitieWithNull };
+        //Assert
+        assert.deepStrictEqual(data, expectedEntity);
+      });
+    });
+
+    describe("Обновление сущностей полностью PUT", async function() {
+      let createdEntity: MythologyEntity;
+      before(async function() {
+        const randomEntity = createRandomEntitie();
+        createdEntity = await entitiesService.create(randomEntity, 201);
+      });
+      createCorrectEntitie.forEach((testItem) => {
+        it(`Обновление сущностей целиком с разными параметрами. Позитивные тесты (цикл проверок): ${testItem.description}`, async function() {
+          //Act
+          const data = await entitiesService.update(
+            createdEntity.id!,
+            testItem.data,
+          );
+          const actualEntitie = await entitiesService.getById(
+            createdEntity.id!,
+          );
+          const oneEntitieWithoutId = actualEntitie.img
+            ? omit(actualEntitie, ["id"])
+            : omit(actualEntitie, ["id", "img"]);
           //Assert
-          assert.deepStrictEqual(data, expectedEntity);
+          assert.deepStrictEqual(
+            oneEntitieWithoutId,
+            omit(testItem.data, ["id"]),
+          );
+        });
+      });
+
+      incorrectID.forEach((testItem) => {
+        it(`Обновление с некорректным ID. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+          //Arrange
+          const randomEntitie = createRandomEntitie();
+          //Act
+          await entitiesService.update(
+            testItem.data.id as number,
+            randomEntitie,
+            testItem.status,
+          );
+        });
+      });
+
+      it("Негативный тест. Обновление потенциально не существующей сущности", async function() {
+        //Arrange
+        const randomEntitie = createRandomEntitie();
+        const allDefaultEntities = await entitiesService.getAll();
+        const number =
+          allDefaultEntities.reduce((max, ent) => Math.max(max, ent.id!), 0) +
+          10;
+        //Act
+        await entitiesService.update(number, randomEntitie, 404);
+      });
+
+      it("Негативный тест. Обновление с пустым телом", async function() {
+        //Act
+        const response = await rawClient.patch(
+          `/mythology/${createdEntity.id!}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        //Assert
+        assert.equal(response.status, 400);
+        assert.equal(response.data.error, entetieMessages.emptyBody);
+      });
+
+      it("Обновление сущности из защищенного списка, негативный тест", async function() {
+        //Arrange
+        const randomEntitie = createRandomEntitie();
+        const number = datagenerator.getRandomNumberFromInterval(1, 31);
+        //Act
+        await entitiesService.update(number, randomEntitie, 403);
+      });
+
+      createIncorrectEntitie.forEach((testItem) => {
+        it(`Обновление с некорректным телом. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+          const responseData = await rawClient.put(
+            `/mythology/${createdEntity.id!}`,
+            testItem.data,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          //Assert
+          assert.equal(
+            responseData.status,
+            testItem.status,
+            `Ожидался ${testItem.status}, получен ${responseData.status}`,
+          );
+        });
       });
     });
   });

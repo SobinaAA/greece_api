@@ -13,5 +13,6 @@ export const authMessages = {
 
 export const entetieMessages = {
   emptyFields: "Поля name и category обязательны.",
-  incorrectID: "ID должен быть положительным целым числом."
+  incorrectID: "ID должен быть положительным целым числом.",
+  emptyBody: "Тело запроса не может быть пустым."
 } as const;
