@@ -10,6 +10,21 @@ import { TestData } from "../../src/types/test.types";
 
 const datagenerator = new DataGenerator();
 
+export function createRandomEntitie (someFields: Partial<MythologyEntity> = {}): MythologyEntity {
+  const oneEntitie: MythologyEntity = {name: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(3, 100),
+            ),
+            category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+            desc: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(2, 50),
+            ),
+            img: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(2, 50),
+            )
+          };
+  return {...oneEntitie, ...someFields};
+};
+
 interface Search {
   category?: MythologyGetCategoryEnum;
   sort?: MythologyGetSortEnum;
