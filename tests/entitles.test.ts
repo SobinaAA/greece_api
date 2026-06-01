@@ -304,16 +304,61 @@ describe("Сущности", function() {
           };
           const createdEntity = await entitiesService.create(randomEntity, 201);
           //Act
-          const data = await entitiesService.patch(createdEntity.id!, testItem.data) as MythologyEntity;
-          const expectedEntity: MythologyEntity = {...createdEntity, ...testItem.data};
+          const data = (await entitiesService.patch(
+            createdEntity.id!,
+            testItem.data,
+          )) as MythologyEntity;
+          const expectedEntity: MythologyEntity = {
+            ...createdEntity,
+            ...testItem.data,
+          };
           //Assert
           assert.deepStrictEqual(data, expectedEntity);
         });
       });
 
       it("Обновление поля с изображением на NULL. Позитивный тест", async function() {
-          //Arrange
-          const randomEntity = {
+        //Arrange
+        const randomEntity = {
+          name: datagenerator.generateAlphanumeric(
+            datagenerator.getRandomNumberFromInterval(3, 100),
+          ),
+          category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+          desc: datagenerator.generateAlphanumeric(
+            datagenerator.getRandomNumberFromInterval(2, 50),
+          ),
+          img: datagenerator.generateAlphanumeric(
+            datagenerator.getRandomNumberFromInterval(2, 50),
+          ),
+        };
+        const createdEntity = await entitiesService.create(randomEntity, 201);
+        const entitieWithNull = {
+          name: datagenerator.generateAlphanumeric(
+            datagenerator.getRandomNumberFromInterval(3, 100),
+          ),
+          category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+          desc: datagenerator.generateAlphanumeric(
+            datagenerator.getRandomNumberFromInterval(2, 50),
+          ),
+          img: null,
+        };
+        //Act
+        const data = (
+          await rawClient.patch(
+            `/mythology/${createdEntity.id!}`,
+            entitieWithNull,
+            { headers: { Authorization: `Bearer ${token}` } },
+          )
+        ).data;
+        const expectedEntity = { ...createdEntity, ...entitieWithNull };
+        //Assert
+        assert.deepStrictEqual(data, expectedEntity);
+      });
+    });
+
+    describe("Обновление сущностей полностью PUT", async function() {
+      let createdEntity: MythologyEntity;
+       before(async function() {const randomEntity: MythologyEntity = {
             name: datagenerator.generateAlphanumeric(
               datagenerator.getRandomNumberFromInterval(3, 100),
             ),
@@ -325,25 +370,23 @@ describe("Сущности", function() {
               datagenerator.getRandomNumberFromInterval(2, 50),
             ),
           };
-           const createdEntity = await entitiesService.create(randomEntity, 201);
-           const entitieWithNull = {
-             name: datagenerator.generateAlphanumeric(
-               datagenerator.getRandomNumberFromInterval(3, 100),
-             ),
-             category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
-             desc: datagenerator.generateAlphanumeric(
-               datagenerator.getRandomNumberFromInterval(2, 50),
-             ),
-             img: null,
-           }; 
+        createdEntity = await entitiesService.create(randomEntity, 201)});
+    
+        createCorrectEntitie.forEach((testItem) => {
+        it.only(`Обновление сущностей целиком с разными параметрами. Позитивные тесты (цикл проверок): ${testItem.description}`, async function() {
           //Act
-          const data = (await rawClient.patch(`/mythology/${createdEntity.id!}`,  entitieWithNull,
-            { headers: { Authorization: `Bearer ${token}` } },
-          )).data;
-          const expectedEntity = {...createdEntity, ...entitieWithNull};
+            const data = await entitiesService.update(
+            createdEntity.id!,
+            testItem.data,
+          );
+          const actualEntitie = await entitiesService.getById(createdEntity.id!);
+          const oneEntitieWithoutId = actualEntitie.img
+            ? omit(actualEntitie, ["id"])
+            : omit(actualEntitie, ["id", "img"]);
           //Assert
-          assert.deepStrictEqual(data, expectedEntity);
-      });
+          assert.deepStrictEqual(oneEntitieWithoutId, omit(testItem.data, ["id"]));
+        })});
+
     });
   });
 });
