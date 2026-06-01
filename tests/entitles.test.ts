@@ -3,6 +3,7 @@ import { DataGenerator } from "../src/helpers/data.generator";
 import {
   Configuration,
   EntitiesApi,
+  MythologyEntity,
   MythologyEntityCategoryEnum,
   MythologyGetCategoryEnum,
 } from "../src/clients";
@@ -13,6 +14,7 @@ import {
   createCorrectEntitie,
   createIncorrectEntitie,
   incorrectID,
+  incorrectSearch,
 } from "./testdata/entities.data";
 import { sorting } from "../src/helpers/sorting";
 import { isEqualByNames } from "../src/helpers/isEqual";
@@ -53,6 +55,19 @@ describe("Сущности", function() {
       });
     });
 
+    incorrectSearch.forEach((testItem) => {
+      it.only(`Получение списка сущностей без авторизации. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+        //Act
+        const response = await rawClient.get(
+          `/mythology/?category=${testItem.data.category}&sort=${testItem.data.sort}`,
+        );
+        const data = response.data as MythologyEntity[];
+        //Assert
+        assert.equal(response.status, 200);
+        assert.ok(!data.some((entity) => entity.category !== testItem.data.category));
+      });
+    });
+
     //**
     // Так как доступа в БД нет, запрашиваем все сущности и одну, сравниваем их по ID
     //  */
@@ -75,28 +90,39 @@ describe("Сущности", function() {
       );
     });
 
-
     //**
     // Так как доступа в БД нет, запрашиваем все сущности и одну, сравниваем их по ID
     //  */
-    it.only("Получение одной сущности без авторизации, такого номера нет. Негативный тест", async function() {
+    it("Получение одной сущности без авторизации, такого номера нет. Негативный тест", async function() {
       //Arrange
       const allDefaultEntities = await entitiesService.getAll();
-      const maxId = allDefaultEntities.reduce((max, item) => Math.max(max, item.id!), 0);
+      const maxId = allDefaultEntities.reduce(
+        (max, item) => Math.max(max, item.id!),
+        0,
+      );
       //Act
-      const response = await rawClient.get(`/mythology/${maxId + datagenerator.getRandomNumberFromInterval(100,1000)}`);
+      const response = await rawClient.get(
+        `/mythology/${maxId +
+          datagenerator.getRandomNumberFromInterval(100, 1000)}`,
+      );
       //Assert
       assert.equal(response.status, 404);
     });
 
     incorrectID.forEach((testItem) => {
-      it.only(`Получение сущности по некорректному номеру. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
-      //Act
-      const response = await rawClient.get(`/mythology/${testItem.data.id}`);
-      //Assert
-      assert.equal(response.status, 400);
-      })});
-
+      it(`Получение сущности по некорректному номеру. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+        //Act
+        const response = await rawClient.get(`/mythology/${testItem.data.id}`);
+        //Assert
+        assert.equal(response.status, 400);
+        assert.ok("error" in response.data, "Ожидалась ошибка");
+        assert.equal(
+          response.data.error,
+          testItem.message,
+          `Ожидался error ${testItem.message}, но получен ${response.data.error}`,
+        );
+      });
+    });
   });
 
   describe("С авторизацией", async function() {
@@ -229,7 +255,11 @@ describe("Сущности", function() {
           );
           if (testItem.message) {
             assert.ok("error" in responseData.data, "Ожидалась ошибка");
-            assert.equal(responseData.data.error, testItem.message, `Ожидался error ${testItem.message}, но получен ${responseData.data.error}`);
+            assert.equal(
+              responseData.data.error,
+              testItem.message,
+              `Ожидался error ${testItem.message}, но получен ${responseData.data.error}`,
+            );
           }
         });
       });

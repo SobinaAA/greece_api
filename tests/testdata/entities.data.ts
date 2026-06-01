@@ -15,11 +15,11 @@ interface Search {
   sort?: MythologyGetSortEnum;
 }
 
-interface GetllTest extends TestData {
+interface GetAllTest extends TestData {
   data: Search;
 }
 
-export const correctSearch: GetllTest[] = [
+export const correctSearch: GetAllTest[] = [
   {
     data: {
       category: datagenerator.getRandomEnum(MythologyGetCategoryEnum),
@@ -57,9 +57,41 @@ export const correctSearch: GetllTest[] = [
   },
 ];
 
+type incorrectSearchFields = {
+  category: string;
+  sort: string;
+};
+
+interface SearchWithIncorrect extends TestData {
+  data: incorrectSearchFields;
+};
+
+export const incorrectSearch: SearchWithIncorrect[] = [
+  {
+    data: {
+      category: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 50),
+      ),
+      sort: datagenerator.getRandomEnum(MythologyGetSortEnum),
+    },
+    description: "Вывод всех с некорректной категорией",
+    status: 200,
+  },
+  {
+    data: {
+      category: datagenerator.getRandomEnum(MythologyGetCategoryEnum),
+      sort: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 5),
+      ),
+    },
+    description: "Вывод всех в некорректном порядке",
+    status: 200,
+  },
+];
+
 interface CreateTest extends TestData {
   data: MythologyEntity;
-}
+};
 
 export const createCorrectEntitie: CreateTest[] = [
   {
