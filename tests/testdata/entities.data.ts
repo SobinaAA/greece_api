@@ -64,7 +64,7 @@ type incorrectSearchFields = {
 
 interface SearchWithIncorrect extends TestData {
   data: incorrectSearchFields;
-};
+}
 
 export const incorrectSearch: SearchWithIncorrect[] = [
   {
@@ -91,7 +91,7 @@ export const incorrectSearch: SearchWithIncorrect[] = [
 
 interface CreateTest extends TestData {
   data: MythologyEntity;
-};
+}
 
 export const createCorrectEntitie: CreateTest[] = [
   {
@@ -351,5 +351,62 @@ export const createIncorrectEntitie: TestData[] = [
     },
     description: "Не тот тип в описании. Число",
     status: 400,
+  },
+];
+
+interface PatchTest extends TestData {
+  data: Partial<MythologyEntity>;
+};
+
+export const correctPatchTest: PatchTest[] = [
+  {
+    data: {
+      name: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(3, 100),
+      ),
+      category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+      desc: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 50),
+      ),
+      img: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 50),
+      ),
+    },
+    description: "Полное обновление сущности",
+    status: 200,
+  },
+  {
+    data: {
+      name: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(3, 50),
+      ),
+    },
+    description: "Обновление имени",
+    status: 200,
+  },
+  {
+    data: {
+      category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+    },
+    description: "Обновление категории",
+    status: 200,
+  },
+  {
+    data: {
+      desc: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 50),
+      ),
+    },
+    description: "Обновление описания",
+    status: 200,
+  },
+  {
+    data: {
+      img: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 50),
+      ),
+    },
+    description: "Обновление изображения",
+    status: 200,
   },
 ];

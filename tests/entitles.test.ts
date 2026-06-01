@@ -10,6 +10,7 @@ import {
 import { EntitiesService } from "../src/services/entitles.service";
 import { prepareToken } from "../src/helpers/login";
 import {
+  correctPatchTest,
   correctSearch,
   createCorrectEntitie,
   createIncorrectEntitie,
@@ -56,7 +57,7 @@ describe("Сущности", function() {
     });
 
     incorrectSearch.forEach((testItem) => {
-      it.only(`Получение списка сущностей без авторизации. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+      it(`Получение списка сущностей без авторизации. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
         //Act
         const response = await rawClient.get(
           `/mythology/?category=${testItem.data.category}&sort=${testItem.data.sort}`,
@@ -64,7 +65,9 @@ describe("Сущности", function() {
         const data = response.data as MythologyEntity[];
         //Assert
         assert.equal(response.status, 200);
-        assert.ok(!data.some((entity) => entity.category !== testItem.data.category));
+        assert.ok(
+          !data.some((entity) => entity.category !== testItem.data.category),
+        );
       });
     });
 
@@ -280,6 +283,66 @@ describe("Сущности", function() {
         };
         //Act
         await entitiesServiceWithoutToken.create(entity, 401);
+      });
+    });
+
+    describe("Обновление сущностей частично PATCH", async function() {
+      correctPatchTest.forEach((testItem) => {
+        it(`Частичное обновление. Позитивные тесты (цикл проверок): ${testItem.description}`, async function() {
+          //Arrange
+          const randomEntity: MythologyEntity = {
+            name: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(3, 100),
+            ),
+            category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+            desc: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(2, 50),
+            ),
+            img: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(2, 50),
+            ),
+          };
+          const createdEntity = await entitiesService.create(randomEntity, 201);
+          //Act
+          const data = await entitiesService.patch(createdEntity.id!, testItem.data) as MythologyEntity;
+          const expectedEntity: MythologyEntity = {...createdEntity, ...testItem.data};
+          //Assert
+          assert.deepStrictEqual(data, expectedEntity);
+        });
+      });
+
+      it("Обновление поля с изображением на NULL. Позитивный тест", async function() {
+          //Arrange
+          const randomEntity = {
+            name: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(3, 100),
+            ),
+            category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+            desc: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(2, 50),
+            ),
+            img: datagenerator.generateAlphanumeric(
+              datagenerator.getRandomNumberFromInterval(2, 50),
+            ),
+          };
+           const createdEntity = await entitiesService.create(randomEntity, 201);
+           const entitieWithNull = {
+             name: datagenerator.generateAlphanumeric(
+               datagenerator.getRandomNumberFromInterval(3, 100),
+             ),
+             category: datagenerator.getRandomEnum(MythologyEntityCategoryEnum),
+             desc: datagenerator.generateAlphanumeric(
+               datagenerator.getRandomNumberFromInterval(2, 50),
+             ),
+             img: null,
+           }; 
+          //Act
+          const data = (await rawClient.patch(`/mythology/${createdEntity.id!}`,  entitieWithNull,
+            { headers: { Authorization: `Bearer ${token}` } },
+          )).data;
+          const expectedEntity = {...createdEntity, ...entitieWithNull};
+          //Assert
+          assert.deepStrictEqual(data, expectedEntity);
       });
     });
   });
