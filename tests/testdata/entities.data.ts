@@ -425,3 +425,63 @@ export const correctPatchTest: PatchTest[] = [
     status: 200,
   },
 ];
+
+export const incorrectPatchTest: TestData[] = [
+   {
+    data: {
+      name: datagenerator.generateAlphanumeric(101),
+    },
+    description: "Обновление имени слишком длинным значением",
+    status: 400,
+  },
+   {
+    data: {
+      field: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 50),
+      ),
+    },
+    description: "Не то поле (не из объекта)",
+    status: 400,
+  },
+     {
+    data: {
+      category: datagenerator.generateAlphanumeric(
+        datagenerator.getRandomNumberFromInterval(2, 50),
+      ),
+    },
+    description: "Заполнение категории не тем значением",
+    status: 400,
+  },
+       {
+    data: {
+      category: 
+        datagenerator.getRandomNumberFromInterval(2, 50)
+    },
+    description: "Заполнение категории не тем типом данных",
+    status: 400,
+  },  
+     {
+    data: {
+      name: 
+        datagenerator.getRandomNumberFromInterval(2, 50)
+    },
+    description: "Заполнение имени не тем типом данных",
+    status: 400,
+  },  
+       {
+    data: {
+      desc: 
+        datagenerator.getRandomNumberFromInterval(2, 50)
+    },
+    description: "Заполнение описания не тем типом данных",
+    status: 400,
+  },  
+         {
+    data: {
+      img: 
+        datagenerator.getRandomNumberFromInterval(2, 50)
+    },
+    description: "Заполнение картинки не тем типом данных",
+    status: 400,
+  },  
+];

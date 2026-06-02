@@ -14,5 +14,6 @@ export const authMessages = {
 export const entetieMessages = {
   emptyFields: "Поля name и category обязательны.",
   incorrectID: "ID должен быть положительным целым числом.",
-  emptyBody: "Тело запроса не может быть пустым."
+  emptyPatchBody: "Тело запроса не может быть пустым.",
+  emptyPutBody: "Для PUT запроса необходимо передать все поля: name, category, desc."
 } as const;

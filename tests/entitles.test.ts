@@ -17,6 +17,7 @@ import {
   incorrectID,
   incorrectSearch,
   createRandomEntitie,
+  incorrectPatchTest,
 } from "./testdata/entities.data";
 import { sorting } from "../src/helpers/sorting";
 import { isEqualByNames } from "../src/helpers/isEqual";
@@ -256,6 +257,11 @@ describe("Сущности", function() {
     });
 
     describe("Обновление сущностей частично PATCH", async function() {
+      let createdEntity: MythologyEntity;
+      before(async function() {
+        const randomEntity = createRandomEntitie();
+        createdEntity = await entitiesService.create(randomEntity, 201);
+      });
       correctPatchTest.forEach((testItem) => {
         it(`Частичное обновление. Позитивные тесты (цикл проверок): ${testItem.description}`, async function() {
           //Arrange
@@ -300,6 +306,102 @@ describe("Сущности", function() {
         const expectedEntity = { ...createdEntity, ...entitieWithNull };
         //Assert
         assert.deepStrictEqual(data, expectedEntity);
+      });
+
+      [{ category: null }, { name: null }, { desc: null }].forEach(
+       (field) => {
+          it(`Обновление обязательного поля (${JSON.stringify(field)}) NULL. Негативный тест`, async function() {
+            //Act
+            const response = await rawClient.patch(
+              `/mythology/${createdEntity.id!}`,
+              field,
+              { headers: { Authorization: `Bearer ${token}` } },
+            );
+            //Assert
+            const errorMessage = response.data.error
+              ? response.data.error
+              : "Нет ошибки в ответе.";
+            assert.equal(
+              response.status,
+              400,
+              `Ожидался статус 400, получен ${response.status}. Ошибка: ${errorMessage}`,
+            );
+          });
+        },
+      );
+
+      incorrectPatchTest.forEach((testItem) => {
+        it.only(`Обновление с некорректным значением полей. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+         //Act
+            const response = await rawClient.patch(
+              `/mythology/${createdEntity.id!}`,
+              testItem.data,
+              { headers: { Authorization: `Bearer ${token}` } },
+            );  
+         //Assert
+         console.log(response.data);
+         assert.equal(
+              response.status,
+              400,
+              `Ожидался статус 400, получен ${response.status}`,
+            );  
+        });
+      });
+
+      incorrectID.forEach((testItem) => {
+        it(`Обновление с некорректным ID. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+          //Arrange
+          const randomEntitie = createRandomEntitie();
+          //Act
+          await entitiesService.patch(
+            testItem.data.id as number,
+            randomEntitie,
+            testItem.status,
+          );
+        });
+      });
+
+      it("Негативный тест. Обновление потенциально не существующей сущности", async function() {
+        //Arrange
+        const randomEntitie = createRandomEntitie();
+        const allDefaultEntities = await entitiesService.getAll();
+        const number =
+          allDefaultEntities.reduce((max, ent) => Math.max(max, ent.id!), 0) +
+          10;
+        //Act
+        await entitiesService.patch(number, randomEntitie, 404);
+      });
+
+      it("Негативный тест. Обновление с пустым телом", async function() {
+        //Act
+        const response = await rawClient.patch(
+          `/mythology/${createdEntity.id!}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        //Assert
+        assert.equal(response.status, 400);
+        assert.equal(response.data.error, entetieMessages.emptyPatchBody);
+      });
+
+      it("Обновление сущности (без авторизации). Негативный тест", async function() {
+        //Arrange
+        const entity = createRandomEntitie();
+        //Act
+        await entitiesServiceWithoutToken.patch(createdEntity.id!, entity, 401);
+      });
+
+      incorrectID.forEach((testItem) => {
+        it(`Обновление с некорректным ID. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+          //Arrange
+          const randomEntitie = createRandomEntitie();
+          //Act
+          await entitiesService.patch(
+            testItem.data.id as number,
+            randomEntitie,
+            testItem.status,
+          );
+        });
       });
     });
 
@@ -356,14 +458,14 @@ describe("Сущности", function() {
 
       it("Негативный тест. Обновление с пустым телом", async function() {
         //Act
-        const response = await rawClient.patch(
+        const response = await rawClient.put(
           `/mythology/${createdEntity.id!}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } },
         );
         //Assert
         assert.equal(response.status, 400);
-        assert.equal(response.data.error, entetieMessages.emptyBody);
+        assert.equal(response.data.error, entetieMessages.emptyPutBody);
       });
 
       it("Обновление сущности из защищенного списка, негативный тест", async function() {
