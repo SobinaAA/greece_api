@@ -331,7 +331,7 @@ describe("Сущности", function() {
       );
 
       incorrectPatchTest.forEach((testItem) => {
-        it.only(`Обновление с некорректным значением полей. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
+        it(`Обновление с некорректным значением полей. Негативные тесты (цикл проверок): ${testItem.description}`, async function() {
          //Act
             const response = await rawClient.patch(
               `/mythology/${createdEntity.id!}`,
