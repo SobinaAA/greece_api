@@ -1,7 +1,12 @@
-import assert from "assert";
-import { AxiosResponse, AxiosError } from "axios";
-import { AuthApi, LoginPostRequest, RegisterPostRequest } from "../clients";
-import { RegisterResponseSuccess, RegisterResponseUnsuccess, AuthResponseSuccess, AuthResponseUnsuccess } from "../types/apiResponse.types.ts";
+import assert from 'assert';
+import { AxiosResponse, AxiosError } from 'axios';
+import { AuthApi, LoginPostRequest, RegisterPostRequest } from '../clients';
+import {
+  RegisterResponseSuccess,
+  RegisterResponseUnsuccess,
+  AuthResponseSuccess,
+  AuthResponseUnsuccess
+} from '../types/apiResponse.types';
 
 export class AuthService {
   private api = new AuthApi();

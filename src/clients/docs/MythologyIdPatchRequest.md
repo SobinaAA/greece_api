@@ -1,14 +1,13 @@
 # MythologyIdPatchRequest
 
-
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**name** | **string** |  | [optional] [default to undefined]
-**desc** | **string** |  | [optional] [default to undefined]
-**category** | **string** |  | [optional] [default to undefined]
-**img** | **string** |  | [optional] [default to undefined]
+| Name         | Type       | Description | Notes                             |
+| ------------ | ---------- | ----------- | --------------------------------- |
+| **name**     | **string** |             | [optional] [default to undefined] |
+| **desc**     | **string** |             | [optional] [default to undefined] |
+| **category** | **string** |             | [optional] [default to undefined] |
+| **img**      | **string** |             | [optional] [default to undefined] |
 
 ## Example
 
@@ -16,10 +15,10 @@ Name | Type | Description | Notes
 import { MythologyIdPatchRequest } from './api';
 
 const instance: MythologyIdPatchRequest = {
-    name,
-    desc,
-    category,
-    img,
+  name,
+  desc,
+  category,
+  img
 };
 ```
 

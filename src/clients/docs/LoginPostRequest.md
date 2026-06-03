@@ -1,12 +1,11 @@
 # LoginPostRequest
 
-
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**username** | **string** |  | [optional] [default to undefined]
-**password** | **string** |  | [optional] [default to undefined]
+| Name         | Type       | Description | Notes                             |
+| ------------ | ---------- | ----------- | --------------------------------- |
+| **username** | **string** |             | [optional] [default to undefined] |
+| **password** | **string** |             | [optional] [default to undefined] |
 
 ## Example
 
@@ -14,8 +13,8 @@ Name | Type | Description | Notes
 import { LoginPostRequest } from './api';
 
 const instance: LoginPostRequest = {
-    username,
-    password,
+  username,
+  password
 };
 ```
 

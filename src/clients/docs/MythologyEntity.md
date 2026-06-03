@@ -1,15 +1,14 @@
 # MythologyEntity
 
-
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**id** | **number** |  | [optional] [readonly] [default to undefined]
-**name** | **string** |  | [default to undefined]
-**category** | **string** |  | [default to undefined]
-**desc** | **string** | Содержимое колонки description в БД | [default to undefined]
-**img** | **string** |  | [optional] [default to undefined]
+| Name         | Type       | Description                         | Notes                                        |
+| ------------ | ---------- | ----------------------------------- | -------------------------------------------- |
+| **id**       | **number** |                                     | [optional] [readonly] [default to undefined] |
+| **name**     | **string** |                                     | [default to undefined]                       |
+| **category** | **string** |                                     | [default to undefined]                       |
+| **desc**     | **string** | Содержимое колонки description в БД | [default to undefined]                       |
+| **img**      | **string** |                                     | [optional] [default to undefined]            |
 
 ## Example
 
@@ -17,11 +16,11 @@ Name | Type | Description | Notes
 import { MythologyEntity } from './api';
 
 const instance: MythologyEntity = {
-    id,
-    name,
-    category,
-    desc,
-    img,
+  id,
+  name,
+  category,
+  desc,
+  img
 };
 ```
 
