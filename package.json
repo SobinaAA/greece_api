@@ -5,7 +5,12 @@
   "scripts": {
     "generate:api": "openapi-generator-cli generate -i https://api.qasandbox.ru/swagger.json -g typescript-axios -o src/clients",
     "test": "mocha -r ts-node/register tests/**/*.test.ts",
-    "test_report": "mocha --require ts-node/register --require source-map-support/register --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=index,json=true,html=true tests/**/*.test.ts"
+    "test_report": "mocha --require ts-node/register --require source-map-support/register --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=index,json=true,html=true tests/**/*.test.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -17,11 +22,13 @@
     "axios": "^1.13.6",
     "crypto-random-string": "^5.0.0",
     "dotenv": "^17.3.1",
+    "eslint-plugin-prettier": "^5.5.6",
     "lint": "^0.8.19",
     "luxon": "^3.7.2",
     "moment": "^2.30.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@openapitools/openapi-generator-cli": "^2.30.2",
     "@types/ajv": "^0.0.5",
     "@types/assert": "^1.5.11",
@@ -31,11 +38,18 @@
     "@types/mochawesome": "^6.2.5",
     "@types/node": "^25.9.1",
     "chai": "^6.2.2",
+    "eslint": "^10.4.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.7.0",
     "mocha": "^11.7.5",
     "mochawesome": "^7.1.4",
     "mochawesome-merge": "^5.1.1",
     "mochawesome-report-generator": "^6.3.2",
     "openapi-typescript": "^7.13.0",
-    "ts-node": "^10.9.2"
+    "prettier": "^3.8.3",
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.60.1"
   }
 }

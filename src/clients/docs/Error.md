@@ -1,11 +1,10 @@
 # ModelError
 
-
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**error** | **string** |  | [optional] [default to undefined]
+| Name      | Type       | Description | Notes                             |
+| --------- | ---------- | ----------- | --------------------------------- |
+| **error** | **string** |             | [optional] [default to undefined] |
 
 ## Example
 
@@ -13,7 +12,7 @@ Name | Type | Description | Notes
 import { ModelError } from './api';
 
 const instance: ModelError = {
-    error,
+  error
 };
 ```
 

@@ -1,11 +1,10 @@
 # LoginPost200Response
 
-
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**token** | **string** |  | [optional] [default to undefined]
+| Name      | Type       | Description | Notes                             |
+| --------- | ---------- | ----------- | --------------------------------- |
+| **token** | **string** |             | [optional] [default to undefined] |
 
 ## Example
 
@@ -13,7 +12,7 @@ Name | Type | Description | Notes
 import { LoginPost200Response } from './api';
 
 const instance: LoginPost200Response = {
-    token,
+  token
 };
 ```
 

@@ -1,7 +1,7 @@
-import { MythologyEntity } from "../clients";
+import { MythologyEntity } from '../clients';
 
 /**
- * @param {MythologyEntity[]} arr1 - array of entities 
+ * @param {MythologyEntity[]} arr1 - array of entities
  * @param {MythologyEntity[]} arr2 - array of entities
  * @returns {boolean} result "Is equal?"
  */

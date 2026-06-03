@@ -1,4 +1,4 @@
-import { MythologyEntity, MythologyGetSortEnum } from "../clients";
+import { MythologyEntity, MythologyGetSortEnum } from '../clients';
 
 /**
  * Sorts array of entities in chosen direction
@@ -10,11 +10,10 @@ export function sorting(
   arr: MythologyEntity[],
   dir: MythologyGetSortEnum
 ): MythologyEntity[] {
-  let mySortedTable: MythologyEntity[];
-  mySortedTable =
-    dir === "asc"
-      ? arr.sort((ent1, ent2) => ent1["name"].localeCompare(ent2["name"]))
-      : arr.sort((ent1, ent2) => ent2["name"].localeCompare(ent1["name"]));
+  let mySortedTable: MythologyEntity[] =
+    dir === 'asc'
+      ? arr.sort((ent1, ent2) => ent1['name'].localeCompare(ent2['name']))
+      : arr.sort((ent1, ent2) => ent2['name'].localeCompare(ent1['name']));
 
   return mySortedTable;
 }
